@@ -37,7 +37,7 @@ export const SITE = {
   experience: "4+ Years",
   email: "sikanderpreetsingh01@gmail.com",
   linkedin: "https://linkedin.com/in/sikander-io",
-  github: "https://github.com/sikander-io",
+  github: "https://github.com/Sikanderpreet",
   resume: "/resume.pdf",
   url: "https://sikanderpreet.dev",
 } as const;
@@ -67,6 +67,11 @@ export const HERO_BADGES: TechBadge[] = [
   { name: "OpenAI", glow: "from-teal-300/30 to-emerald-500/10" },
   { name: "RabbitMQ", glow: "from-orange-500/30 to-red-500/10" },
   { name: "Redis", glow: "from-red-400/30 to-rose-500/10" },
+  { name: "Next.js", glow: "from-slate-200/30 to-zinc-500/10" },
+  { name: "TypeScript", glow: "from-blue-400/30 to-sky-500/10" },
+  { name: "Socket.io", glow: "from-zinc-300/30 to-slate-600/10" },
+  { name: "Docker", glow: "from-sky-400/30 to-cyan-500/10" },
+  { name: "Git", glow: "from-orange-400/30 to-rose-500/10" },
 ];
 
 /** ----------------------------------------------------------------

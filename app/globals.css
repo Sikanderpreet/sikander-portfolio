@@ -61,8 +61,18 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     overflow-x: hidden;
-    /* Layered radial glows give the page a subtle, expensive-feeling depth
-       even before any section paints its own background. */
+  }
+
+  /* Layered radial glows give the page a subtle, expensive-feeling depth even
+     before any section paints its own background. Rendered on a composited,
+     position:fixed pseudo-element instead of `background-attachment: fixed`,
+     which would otherwise force a full-screen repaint on every scroll frame. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background-image:
       radial-gradient(
         60rem 60rem at 12% -10%,
@@ -79,7 +89,6 @@
         hsl(var(--brand-cyan) / 0.08),
         transparent 60%
       );
-    background-attachment: fixed;
   }
 
   /* Lenis */
