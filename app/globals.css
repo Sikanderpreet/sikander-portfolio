@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark cinematic palette (HSL channels) — subtle indigo-tinted blacks
+       for more depth and warmth than a flat neutral grey. */
+    --background: 230 28% 4.5%;
+    --foreground: 220 18% 97%;
+
+    --card: 230 24% 7%;
+    --card-foreground: 220 18% 97%;
+
+    --primary: 162 92% 48%;
+    --primary-foreground: 230 30% 5%;
+
+    --secondary: 232 18% 13%;
+    --secondary-foreground: 220 14% 92%;
+
+    --muted: 232 14% 15%;
+    --muted-foreground: 226 12% 64%;
+
+    --accent: 268 90% 68%;
+    --accent-foreground: 220 18% 97%;
+
+    --border: 230 16% 18%;
+    --input: 230 16% 18%;
+    --ring: 162 92% 48%;
+
+    /* Brand accents used across sections — a wider, more vivid spectrum */
+    --brand-cyan: 188 96% 56%;
+    --brand-violet: 268 90% 68%;
+    --brand-emerald: 158 88% 50%;
+    --brand-amber: 38 96% 60%;
+    --brand-rose: 332 86% 64%;
+
+    --radius: 1rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: auto; /* Lenis owns smooth scrolling */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headlines use the grotesk display face with tightened tracking for an
+     editorial, intentional feel. Body copy stays on Inter for readability. */
+  h1,
+  h2,
+  h3 {
+    font-family: theme("fontFamily.display");
+    letter-spacing: -0.022em;
+    font-feature-settings: "ss01", "cv01";
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
+    /* Layered radial glows give the page a subtle, expensive-feeling depth
+       even before any section paints its own background. */
+    background-image:
+      radial-gradient(
+        60rem 60rem at 12% -10%,
+        hsl(var(--brand-emerald) / 0.1),
+        transparent 60%
+      ),
+      radial-gradient(
+        55rem 55rem at 100% 8%,
+        hsl(var(--brand-violet) / 0.12),
+        transparent 60%
+      ),
+      radial-gradient(
+        50rem 50rem at 50% 110%,
+        hsl(var(--brand-cyan) / 0.08),
+        transparent 60%
+      );
+    background-attachment: fixed;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: hsl(var(--brand-emerald) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      hsl(var(--brand-emerald) / 0.6),
+      hsl(var(--brand-violet) / 0.6)
+    );
+    border-radius: 9999px;
+    border: 2px solid hsl(var(--background));
+  }
+}
+
+@layer components {
+  /* Glassmorphism surface */
+  .glass {
+    background: hsl(var(--card) / 0.5);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid hsl(var(--border) / 0.7);
+  }
+
+  .glass-strong {
+    background: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid hsl(var(--border) / 0.8);
+  }
+
+  /* Gradient text — disciplined emerald→cyan blend. A two-hue range reads as a
+     deliberate brand accent rather than a rainbow gimmick. */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      105deg,
+      hsl(var(--brand-emerald)),
+      hsl(var(--brand-cyan)) 65%,
+      hsl(var(--brand-emerald))
+    );
+    background-size: 200% 200%;
+    @apply animate-gradient-shift;
+  }
+
+  /* Availability / status pill (Hero). */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-border/70 bg-secondary/40 px-4 py-1.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.22em] text-muted-foreground;
+  }
+
+  /* Editorial section label — monospace, hairline-ruled. Not a pill. */
+  .section-label {
+    @apply inline-flex items-center gap-3 font-mono text-[0.7rem] font-medium uppercase tracking-[0.28em] text-primary;
+  }
+  .section-label::before {
+    content: "";
+    @apply h-px w-10 bg-gradient-to-r from-primary to-transparent;
+  }
+  .section-label[data-align="center"]::after {
+    content: "";
+    @apply h-px w-10 bg-gradient-to-l from-primary to-transparent;
+  }
+
+  /* Gradient border card */
+  .gradient-border {
+    position: relative;
+    background: hsl(var(--card) / 0.5);
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      130deg,
+      hsl(var(--brand-emerald) / 0.6),
+      transparent 35%,
+      transparent 65%,
+      hsl(var(--brand-violet) / 0.6)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  /* Radial mask for fading grids/particles toward edges */
+  .mask-radial-faded {
+    -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+    mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
