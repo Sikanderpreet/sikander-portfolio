@@ -1,96 +1,77 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Briefcase, CheckCircle2 } from "lucide-react";
-import { SectionHeading } from "@/components/SectionHeading";
+import { m, useScroll } from "framer-motion";
 import { EXPERIENCE } from "@/lib/data";
+import { EASE, SectionTitle } from "@/components/motion";
+import { cn } from "@/lib/utils";
 
+/**
+ * The timeline line draws itself as you scroll (kept from the old site, on
+ * request), and each role swings in from its side as it reaches the line.
+ */
 export function Experience() {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 70%", "end 60%"],
-  });
-  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 75%", "end 55%"] });
 
   return (
-    <section id="experience" className="relative py-24 sm:py-32">
+    <section id="experience" className="border-y-[3px] border-ink bg-sand/60 py-20 lg:py-28">
       <div className="container">
-        <SectionHeading
-          eyebrow="Experience"
-          title={
-            <>
-              A track record of <span className="text-gradient">shipping</span>
-            </>
-          }
-          description="From the classroom to production systems — a path defined by curiosity and a bias toward building things that last."
-        />
+        <SectionTitle eyebrow="Experience" before="From the classroom to" mark="production" />
 
-        <div ref={ref} className="relative mx-auto mt-16 max-w-3xl">
-          {/* Static rail */}
-          <div className="absolute left-4 top-2 h-full w-px bg-border/60 sm:left-1/2" />
-          {/* Animated progress line */}
-          <motion.div
-            style={{ scaleY: lineScale }}
-            className="absolute left-4 top-2 h-full w-px origin-top bg-gradient-to-b from-emerald via-cyan to-violet sm:left-1/2"
+        <div ref={ref} className="relative mx-auto max-w-4xl">
+          {/* rail + the part that fills as you scroll */}
+          <div className="absolute bottom-0 left-[18px] top-0 w-[4px] rounded-full bg-ink/15 md:left-1/2 md:-ml-[2px]" />
+          <m.div
+            style={{ scaleY: scrollYProgress }}
+            className="absolute bottom-0 left-[18px] top-0 w-[4px] origin-top rounded-full bg-tomato md:left-1/2 md:-ml-[2px]"
           />
 
-          <div className="flex flex-col gap-12">
-            {EXPERIENCE.map((item, i) => {
-              const isLeft = i % 2 === 0;
+          <ol className="flex flex-col gap-10 md:gap-14">
+            {EXPERIENCE.map((job, i) => {
+              const left = i % 2 === 0;
               return (
-                <div
-                  key={item.company}
-                  className={`relative pl-12 sm:w-1/2 sm:pl-0 ${
-                    isLeft
-                      ? "sm:self-start sm:pr-12 sm:text-right"
-                      : "sm:self-end sm:pl-12"
-                  }`}
+                <li
+                  key={job.company}
+                  className={cn("relative pl-14 md:w-1/2 md:pl-0", left ? "md:self-start md:pr-12" : "md:self-end md:pl-12")}
                 >
-                  {/* Node */}
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                    className={`absolute top-1.5 left-0 grid h-8 w-8 place-items-center rounded-full bg-card ring-2 ring-primary/40 sm:left-auto ${
-                      isLeft ? "sm:-right-4" : "sm:-left-4"
-                    }`}
+                  {/* node */}
+                  <m.span
+                    initial={{ scale: 0, rotate: -40 }}
+                    whileInView={{ scale: 1, rotate: -18 }}
+                    viewport={{ once: true, margin: "-25% 0px" }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    className={cn(
+                      "absolute left-[6px] top-6 h-7 w-7 rounded-[6px] border-[3px] border-ink",
+                      i === 0 ? "bg-tomato" : "bg-sunflower",
+                      left ? "md:left-auto md:-right-[14px]" : "md:-left-[14px]"
+                    )}
+                  />
+                  <m.div
+                    initial={{ opacity: 0, x: left ? -40 : 40 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-20% 0px" }}
+                    transition={{ duration: 0.4, ease: EASE }}
+                    className="card p-6"
                   >
-                    <span className="h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_12px_2px_hsl(var(--brand-emerald)/0.8)]" />
-                  </motion.span>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="gradient-border rounded-2xl p-6 text-left"
-                  >
-                    <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary">
-                      <Briefcase className="h-3.5 w-3.5" />
-                      {item.period}
-                    </div>
-                    <h3 className="mt-2 text-xl font-semibold">{item.role}</h3>
-                    <p className="text-sm text-muted-foreground">{item.company}</p>
-
+                    <p className="font-mono text-xs font-bold uppercase tracking-wider text-grey">{job.period}</p>
+                    <h3 className="mt-2 text-2xl font-black leading-tight tracking-tight">{job.role}</h3>
+                    <p className="mt-1 font-extrabold">
+                      {job.company} <span className="font-semibold text-grey">· {job.where}</span>
+                    </p>
                     <ul className="mt-4 space-y-2">
-                      {item.highlights.map((h) => (
-                        <li
-                          key={h}
-                          className="flex items-start gap-2 text-sm text-muted-foreground"
-                        >
-                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary/70" />
-                          <span>{h}</span>
+                      {job.points.map((pt) => (
+                        <li key={pt} className="flex gap-2.5 text-[15px] font-medium leading-relaxed text-ink/80">
+                          <span className="mt-2 h-2 w-2 shrink-0 rotate-[-18deg] rounded-[2px] bg-tomato" />
+                          {pt}
                         </li>
                       ))}
                     </ul>
-                  </motion.div>
-                </div>
+                  </m.div>
+                </li>
               );
             })}
-          </div>
+          </ol>
         </div>
       </div>
     </section>
