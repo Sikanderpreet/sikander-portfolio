@@ -2,7 +2,7 @@
   "name": "sikanderpreet-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Premium cinematic portfolio for Sikanderpreet Singh — Backend Developer",
+  "description": "Portfolio of Sikanderpreet Singh, Node.js backend developer",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
